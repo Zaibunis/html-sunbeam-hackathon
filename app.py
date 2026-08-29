@@ -70,11 +70,20 @@ STYLE = """
 <style>
   body {
     font-family: 'Kalam', cursive;
-    background-color: #fffdf5;
-    background-image: repeating-linear-gradient(#fffdf5, #fffdf5 27px, #dbe9f4 28px);
     margin: 0;
     padding: 0;
-    color: #333;
+    color: #5c3d1e;
+    background-color: #fff4d6;
+    /* soft sunbeams fanning out from the top corner */
+    background-image:
+      repeating-conic-gradient(
+        from 0deg at 15% -10%,
+        rgba(255, 214, 102, 0.35) 0deg 8deg,
+        rgba(255, 244, 214, 0) 8deg 20deg
+      ),
+      linear-gradient(180deg, #fff1c7 0%, #ffe7a6 45%, #ffd97d 100%);
+    background-attachment: fixed;
+    min-height: 100vh;
   }
   .wrap {
     max-width: 650px;
@@ -83,33 +92,34 @@ STYLE = """
   }
   h1 {
     text-align: center;
-    color: #ff914d;
+    color: #e07a1f;
     font-size: 2.3rem;
     margin-bottom: 5px;
+    text-shadow: 0 2px 0 rgba(255,255,255,0.5);
   }
   .subtitle {
     text-align: center;
-    color: #555;
+    color: #8a6a3a;
     margin-bottom: 25px;
   }
   .box {
-    background: #ffffff;
-    border: 2px solid #333;
-    border-radius: 10px;
+    background: #fffdf4;
+    border: 2px solid #f0b429;
+    border-radius: 14px;
     padding: 20px;
-    box-shadow: 6px 6px 0px rgba(0,0,0,0.15);
+    box-shadow: 6px 6px 0px rgba(224, 122, 31, 0.18);
     margin-bottom: 20px;
   }
   .energy-bar-outer {
-    background: #eee;
-    border: 2px solid #333;
+    background: #fff1cc;
+    border: 2px solid #f0b429;
     border-radius: 8px;
     height: 24px;
     overflow: hidden;
     margin-bottom: 6px;
   }
   .energy-bar-inner {
-    background: #a2d5f2;
+    background: linear-gradient(90deg, #ffd166, #ff9f43);
     height: 100%;
     width: 0%;
     transition: width 0.2s ease;
@@ -118,42 +128,46 @@ STYLE = """
     text-align: center;
     font-size: 0.9rem;
     margin-bottom: 20px;
-    color: #555;
+    color: #8a6a3a;
   }
   .activity {
     display: flex;
     align-items: center;
     gap: 10px;
     padding: 8px 6px;
-    border-bottom: 1px solid #eee;
+    border-bottom: 1px solid #fbe4ad;
   }
   .activity label {
     flex-grow: 1;
     cursor: pointer;
   }
   .cost-tag {
-    background: #ffe9c7;
-    border: 1px solid #e0b976;
+    background: #ffe4ad;
+    border: 1px solid #e0a83f;
     border-radius: 6px;
     padding: 2px 8px;
     font-size: 0.8rem;
+    color: #7a5417;
   }
   button {
-    background-color: #a2d5f2;
-    border: 2px solid #333;
-    border-radius: 6px;
-    padding: 10px 20px;
+    background: linear-gradient(180deg, #ffd166, #ff9f43);
+    border: 2px solid #e07a1f;
+    color: #6b3a0a;
+    border-radius: 8px;
+    padding: 10px 22px;
     font-family: 'Kalam', cursive;
+    font-weight: 700;
     font-size: 1.05rem;
     cursor: pointer;
     display: block;
     margin: 20px auto 0 auto;
+    box-shadow: 3px 3px 0px rgba(224, 122, 31, 0.25);
   }
-  button:hover { background-color: #7fc1e8; }
+  button:hover { background: linear-gradient(180deg, #ffdb85, #ffab5e); }
   .error {
-    background: #ffe0e0;
-    border: 2px solid #d9534f;
-    color: #a83232;
+    background: #fff0d6;
+    border: 2px solid #e0762a;
+    color: #a5501a;
     border-radius: 8px;
     padding: 10px 14px;
     text-align: center;
@@ -162,32 +176,34 @@ STYLE = """
   .score {
     text-align: center;
     font-size: 2rem;
-    color: #ff914d;
+    color: #e07a1f;
     margin: 10px 0 0 0;
   }
   .grade {
     text-align: center;
     font-size: 1.3rem;
     margin-bottom: 20px;
+    color: #8a6a3a;
   }
   .bonus-list {
     text-align: center;
-    color: #4a8f4a;
+    color: #b9860a;
     margin-bottom: 15px;
   }
   .diary-text {
     font-size: 1.1rem;
     line-height: 1.6;
-    background: #fffbe6;
-    border: 1px solid #eee0a8;
+    background: #fff8e1;
+    border: 1px solid #f3d68a;
     border-radius: 8px;
     padding: 16px;
+    color: #5c3d1e;
   }
   a.again {
     display: block;
     text-align: center;
     margin-top: 20px;
-    color: #555;
+    color: #a5701a;
   }
 </style>
 """

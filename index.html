@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Build Your Perfect Day</title>
+<link href="https://fonts.googleapis.com/css2?family=Kalam:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="wrap">
+
+  <!-- ---------- PAGE 1: pick your activities ---------- -->
+  <div id="form-page">
+    <h1>🌞 Build Your Perfect Day</h1>
+    <p class="subtitle">You've got <span id="budget-label">10</span> energy points. Pick activities to fill your day without running out!</p>
+
+    <div id="error-box"></div>
+
+    <div class="box">
+      <div class="energy-bar-outer">
+        <div class="energy-bar-inner" id="energy-bar"></div>
+      </div>
+      <div id="energy-label">0 / 10 energy used</div>
+
+      <div id="activity-list"></div>
+    </div>
+
+    <button type="button" id="plan-btn">Plan My Day →</button>
+  </div>
+
+  <!-- ---------- PAGE 2: result ---------- -->
+  <div id="result-page">
+    <h1 id="grade-heading"></h1>
+    <p class="score" id="score-line"></p>
+    <p class="grade">out of a possible ~75</p>
+
+    <div class="bonus-list" id="bonus-list"></div>
+
+    <div class="box">
+      <h2>📔 Your Day, In Your Own Words</h2>
+      <p class="diary-text" id="diary-text"></p>
+    </div>
+
+    <a class="again" id="again-link">↺ play again / plan a different day</a>
+  </div>
+
+</div>
+
+<script>
+  const ENERGY_BUDGET = 10;
+
+  const ACTIVITIES = [
+    {id: "sleep_in",    emoji: "😴", name: "Sleep In",         cost: 2, points: 10,
+     line: "You slept in and woke up feeling wonderfully rested."},
+    {id: "coffee",      emoji: "☕", name: "Morning Coffee",   cost: 1, points: 8,
+     line: "You started the morning with a really good cup of coffee."},
+    {id: "jog",         emoji: "🏃", name: "Sunrise Jog",      cost: 3, points: 15,
+     line: "You went for a jog as the sun came up and it woke you right up."},
+    {id: "breakfast",   emoji: "🥞", name: "Big Breakfast",    cost: 2, points: 12,
+     line: "You made yourself a big, delicious breakfast."},
+    {id: "hobby",       emoji: "🎨", name: "Work on a Hobby",  cost: 3, points: 18,
+     line: "You spent time on your favorite hobby and totally lost track of time."},
+    {id: "call_friend", emoji: "📞", name: "Call a Friend",    cost: 1, points: 10,
+     line: "You called an old friend and caught up for a while."},
+    {id: "walk",        emoji: "🌳", name: "Walk in the Park", cost: 2, points: 13,
+     line: "You took a slow walk outside and enjoyed the fresh air."},
+    {id: "cook",        emoji: "🍝", name: "Cook a Nice Meal", cost: 3, points: 16,
+     line: "You cooked yourself a proper, delicious meal."},
+    {id: "movie",       emoji: "🎬", name: "Watch a Movie",    cost: 2, points: 11,
+     line: "You watched a movie you'd been wanting to see for ages."},
+    {id: "book",        emoji: "📖", name: "Read a Book",      cost: 2, points: 12,
+     line: "You curled up and read a good chunk of a book."},
+    {id: "stars",       emoji: "🌌", name: "Stargazing",       cost: 2, points: 14,
+     line: "You lay outside and watched the stars for a while."},
+    {id: "dance",       emoji: "💃", name: "Dance Party",      cost: 3, points: 17,
+     line: "You put on music and had a little dance party, just for you."},
+  ];
+
+  // bonus points if you pick BOTH activities in a pair
+  const COMBOS = [
+    [["coffee", "jog"],         5, "☕ + 🏃 Perfect Morning Combo!"],
+    [["cook", "movie"],         5, "🍝 + 🎬 Cozy Night In!"],
+    [["call_friend", "dance"],  5, "📞 + 💃 Social Butterfly!"],
+    [["book", "stars"],         5, "📖 + 🌌 Peaceful Soul!"],
+  ];
+
+  function getActivity(id) {
+    return ACTIVITIES.find(a => a.id === id) || null;
+  }
+
+  function gradeForScore(score) {
+    if (score >= 65) return ["A Truly Perfect Day!", "🌟"];
+    if (score >= 50) return ["A Really Great Day", "😊"];
+    if (score >= 35) return ["A Pretty Good Day", "🙂"];
+    return ["An Okay Day (try a different combo!)", "😌"];
+  }
+
+  // ---------- build the activity list ----------
+  const listEl = document.getElementById("activity-list");
+  document.getElementById("budget-label").textContent = ENERGY_BUDGET;
+
+  ACTIVITIES.forEach(a => {
+    const row = document.createElement("div");
+    row.className = "activity";
+    row.innerHTML = `
+      <input type="checkbox" value="${a.id}" id="${a.id}" data-cost="${a.cost}">
+      <label for="${a.id}">${a.emoji} ${a.name}</label>
+      <span class="cost-tag">${a.cost} energy</span>
+    `;
+    listEl.appendChild(row);
+  });
+
+  function updateEnergy() {
+    const boxes = document.querySelectorAll('#activity-list input[type=checkbox]:checked');
+    let total = 0;
+    boxes.forEach(b => total += parseInt(b.getAttribute('data-cost'), 10));
+
+    const pct = Math.min((total / ENERGY_BUDGET) * 100, 100);
+    const bar = document.getElementById('energy-bar');
+    bar.style.width = pct + '%';
+    bar.style.background = total > ENERGY_BUDGET
+      ? 'linear-gradient(90deg, #f2a2a2, #e07a7a)'
+      : 'linear-gradient(90deg, #ffd166, #ff9f43)';
+
+    document.getElementById('energy-label').textContent = total + ' / ' + ENERGY_BUDGET + ' energy used';
+  }
+
+  listEl.addEventListener('change', updateEnergy);
+  updateEnergy();
+
+  function showError(msg) {
+    document.getElementById('error-box').innerHTML = `<div class="error">${msg}</div>`;
+  }
+  function clearError() {
+    document.getElementById('error-box').innerHTML = '';
+  }
+
+  document.getElementById('plan-btn').addEventListener('click', () => {
+    clearError();
+
+    const checked = Array.from(document.querySelectorAll('#activity-list input[type=checkbox]:checked'));
+    const chosenIds = checked.map(c => c.value);
+    const chosen = chosenIds.map(getActivity).filter(Boolean);
+
+    const totalCost = chosen.reduce((sum, a) => sum + a.cost, 0);
+
+    if (chosen.length === 0) {
+      showError("You didn't plan anything at all! Pick a few activities first.");
+      return;
+    }
+
+    if (totalCost > ENERGY_BUDGET) {
+      showError(`Whoa, that's too much for one day (${totalCost} energy used, only ${ENERGY_BUDGET} available). Remove something!`);
+      return;
+    }
+
+    // calculate score
+    const baseScore = chosen.reduce((sum, a) => sum + a.points, 0);
+    const chosenSet = new Set(chosenIds);
+
+    let bonusPoints = 0;
+    const bonusMessages = [];
+    COMBOS.forEach(([pair, bonus, message]) => {
+      if (pair.every(id => chosenSet.has(id))) {
+        bonusPoints += bonus;
+        bonusMessages.push(message);
+      }
+    });
+
+    const totalScore = baseScore + bonusPoints;
+
+    // build the diary paragraph
+    let diaryText = "Today was a good one. " + chosen.map(a => a.line).join(" ");
+    const [gradeTitle, gradeEmoji] = gradeForScore(totalScore);
+
+    if (totalScore >= 65) {
+      diaryText += " Honestly? Pretty much the perfect day.";
+    } else if (totalScore < 35) {
+      diaryText += " It was fine, but I think tomorrow could be better.";
+    }
+
+    // render result page
+    document.getElementById('grade-heading').textContent = `${gradeEmoji} ${gradeTitle}`;
+    document.getElementById('score-line').textContent = `${totalScore} points`;
+    document.getElementById('bonus-list').innerHTML =
+      bonusMessages.map(b => `<div>✨ ${b}</div>`).join('');
+    document.getElementById('diary-text').textContent = diaryText;
+
+    document.getElementById('form-page').style.display = 'none';
+    document.getElementById('result-page').style.display = 'block';
+    window.scrollTo(0, 0);
+  });
+
+  document.getElementById('again-link').addEventListener('click', () => {
+    // reset selections
+    document.querySelectorAll('#activity-list input[type=checkbox]').forEach(c => c.checked = false);
+    updateEnergy();
+    clearError();
+    document.getElementById('result-page').style.display = 'none';
+    document.getElementById('form-page').style.display = 'block';
+    window.scrollTo(0, 0);
+  });
+</script>
+
+</body>
+</html>
